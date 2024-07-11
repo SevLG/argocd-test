@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}-frontend-deployment
+  labels:
+    app: {{ .Values.name }}-frontend
+spec:
+  replicas: {{ .Values.deployment.frontendReplicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}-frontend
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}-frontend
+        connect-to-flask: allow
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        fsGroup: 1000
+      automountServiceAccountToken: false
+      containers:
+      - name: {{ .Values.deployment.container.name }}-react-app
+        image: {{ .Values.deployment.container.frontendImage }}
+        imagePullPolicy: {{ .Values.deployment.container.imagePullPolicy }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+          runAsNonRoot: true
+          runAsUser: 1000
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
+          runAsGroup: 1000
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+      volumes:
+      - emptyDir: {}
+        name: tmp

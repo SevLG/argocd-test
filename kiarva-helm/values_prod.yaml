@@ -1,0 +1,28 @@
+name: precision-medicine-portal
+
+argocd:
+  appname: precision-medicine-portal
+
+deployment:
+  frontendReplicas: 1
+  backendReplicas: 1
+  container:
+    name: pmp-web-app-prod
+    frontendImage: ghcr.io/scilifelabdatacentre/precision-medicine-portal-frontend:0.3.2
+    backendImage: ghcr.io/scilifelabdatacentre/precision-medicine-portal:0.0.2
+    imagePullPolicy: Always
+
+service:
+
+ingress:
+  localTest: false
+  host: "precision-medicine-portal.scilifelab.se"
+
+np:
+  enabled: true
+
+postgresql:
+  auth:
+    username: ""
+    password: ""
+    database: ""

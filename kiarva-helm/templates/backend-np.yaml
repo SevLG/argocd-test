@@ -1,0 +1,20 @@
+{{- if .Values.np.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Values.name }}-backend-np
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Values.name }}-backend
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          connect-to-flask: allow
+    ports:
+    - protocol: TCP
+      port: 5000
+{{- end}}

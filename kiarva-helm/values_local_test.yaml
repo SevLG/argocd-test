@@ -1,0 +1,23 @@
+name: kiarva-local
+
+argocd:
+  appname: test
+
+deployment:
+  frontendReplicas: 1
+  backendReplicas: 1
+  dbReplicas: 1
+  container:
+    name: kiarva-web-app-local
+    frontendImage: local/kiarva-react-app-test
+    backendImage: local/kiarva-flask-app-test
+    imagePullPolicy: Never
+
+service:
+
+ingress:
+  localTest: true
+  host: "precision-medicine-portal.test"
+
+np:
+  enabled: false

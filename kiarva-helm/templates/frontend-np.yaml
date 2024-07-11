@@ -1,0 +1,42 @@
+---
+{{- if .Values.np.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Values.name }}-frontend-np
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Values.name }}-frontend
+  policyTypes:
+  - Egress
+  - Ingress
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: {{ .Values.name }}-backend
+    ports:
+    - protocol: TCP
+      port: 5000
+  ingress:
+  - from:
+    ports:
+    - protocol: TCP
+      port: 8080
+{{- end }}
+---
+{{- if .Values.np.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-cert-manager-lets-encrypt
+spec:
+  podSelector:
+    matchLabels:
+      acme.cert-manager.io/http01-solver: "true"
+  policyTypes:
+    - Ingress
+  ingress:
+    - {}
+{{- end }}

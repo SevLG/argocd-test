@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}-backend-deployment
+  labels:
+    app: {{ .Values.name }}-backend
+spec:
+  replicas: {{ .Values.deployment.backendReplicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}-backend
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}-backend
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        fsGroup: 1501
+      automountServiceAccountToken: false
+      containers:
+      - name: {{ .Values.deployment.container.name }}-flask-app
+        image: {{ .Values.deployment.container.backendImage }}
+        imagePullPolicy: {{ .Values.deployment.container.imagePullPolicy }}
+        # env:
+        #   - name: FRONTEND_URL
+        #     valueFrom:
+        #       configMapKeyRef:
+        #         name: {{ .Values.name }}-backend-env-cm
+        #         key: frontend_url
+        #   - name: API_KEY
+        #     valueFrom:
+        #       configMapKeyRef:
+        #         name: {{ .Values.name }}-backend-env-cm
+        #         key: api_key
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+          runAsNonRoot: true
+          runAsUser: 1501
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
+          runAsGroup: 1501

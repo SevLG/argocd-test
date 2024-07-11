@@ -1,0 +1,68 @@
+{{- if .Values.ingress.localTest }}
+---
+# Middleware
+# Strip prefix /overview
+# Used instead of rewrite-target when testing locally
+# because Traefik doesn't support rewrite-target
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: mw-admin
+spec:
+  stripPrefix:
+    forceSlash: false
+    prefixes:
+      - /api
+---
+{{- end }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.name }}-ingress
+  annotations:
+    {{- if .Values.ingress.localTest }}
+    # using Traefik for local tests
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.middlewares: precision-medicine-portal-mw-admin@kubernetescrd
+    {{- else }}
+    # not tested in production cluster yet, as the cluster
+    # is currently being moved
+    # using Nginx for DC cluster
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    {{- end }}
+spec:
+  {{- if not .Values.ingress.localTest }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.name }}-tls
+  {{- end }}
+  rules:
+  - host: {{ .Values.ingress.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.name }}-frontend-service
+            port:
+              number: 8080
+      {{- if .Values.ingress.localTest }}
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.name }}-backend-service
+            port:
+              number: 5000
+      {{- else }}
+      - path: /api/?(.*)
+        pathType: prefix
+        backend:
+          service:
+            name: {{ .Values.name }}-backend-service
+            port:
+              number: 5000
+      {{- end }}
