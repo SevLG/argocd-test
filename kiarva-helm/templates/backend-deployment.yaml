@@ -45,10 +45,10 @@ spec:
               - ALL
           runAsGroup: 1501
         volumeMounts:
-        - mountPath: /instance
+        - mountPath: /app/instance
           name: instance
         volumeMounts:
-        - mountPath: /migrations
+        - mountPath: /app/migrations
           name: migrations
       volumes:
       - emptyDir: {}
