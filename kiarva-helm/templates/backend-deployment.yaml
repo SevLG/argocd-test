@@ -45,14 +45,18 @@ spec:
               - ALL
           runAsGroup: 1501
         volumeMounts:
-        - mountPath: /app/instance
-          name: app/instance
-        volumeMounts:
-        - mountPath: /app/migrations
-          name: app/migrations
+        - mountPath: "/app/instance"
+          name: scratch-volume
       volumes:
-      - emptyDir: {}
-        name: app/instance
-      volumes:
-      - emptyDir: {}
-        name: app/migrations
+      - name: scratch-volume
+        ephemeral:
+          volumeClaimTemplate:
+            metadata:
+              labels:
+                type: flask-db-volume
+            spec:
+              accessModes: [ "ReadWriteOnce" ]
+              storageClassName: "scratch-storage-class"
+              resources:
+                requests:
+                  storage: 1Gi
