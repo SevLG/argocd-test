@@ -47,8 +47,6 @@ spec:
         volumeMounts:
         - mountPath: "/app/instance"
           name: scratch-volume
-        - mountPath: "/app/migrations"
-          name: scratch-volume
       volumes:
       - name: scratch-volume
         ephemeral:
