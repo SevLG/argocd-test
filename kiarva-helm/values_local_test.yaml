@@ -13,8 +13,6 @@ deployment:
     backendImage: local/kiarva-flask-app-test
     imagePullPolicy: Never
 
-service:
-
 ingress:
   localTest: true
   host: "kiarva.test"
