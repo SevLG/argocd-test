@@ -34,9 +34,6 @@ spec:
             drop:
               - ALL
           runAsGroup: 1000
-        env:
-        - name: VITE_BACKEND_API_URL
-          value: https://{{ .Values.ingress.host }}/api/
         volumeMounts:
         - mountPath: /tmp
           name: tmp
