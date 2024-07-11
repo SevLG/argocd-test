@@ -44,3 +44,15 @@ spec:
             drop:
               - ALL
           runAsGroup: 1501
+        volumeMounts:
+        - mountPath: /instance
+          name: instance
+        volumeMounts:
+        - mountPath: /migrations
+          name: migrations
+      volumes:
+      - emptyDir: {}
+        name: instance
+      volumes:
+      - emptyDir: {}
+        name: migrations
