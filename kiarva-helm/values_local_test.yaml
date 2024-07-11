@@ -17,7 +17,7 @@ service:
 
 ingress:
   localTest: true
-  host: "precision-medicine-portal.test"
+  host: "kiarva.test"
 
 np:
   enabled: false
