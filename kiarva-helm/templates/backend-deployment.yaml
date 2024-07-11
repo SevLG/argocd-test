@@ -56,7 +56,6 @@ spec:
                 type: flask-db-volume
             spec:
               accessModes: [ "ReadWriteOnce" ]
-              storageClassName: "scratch-storage-class"
               resources:
                 requests:
                   storage: 1Gi
