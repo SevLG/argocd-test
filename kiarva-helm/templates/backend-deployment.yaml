@@ -46,13 +46,13 @@ spec:
           runAsGroup: 1501
         volumeMounts:
         - mountPath: /app/instance
-          name: instance
+          name: app/instance
         volumeMounts:
         - mountPath: /app/migrations
-          name: migrations
+          name: app/migrations
       volumes:
       - emptyDir: {}
-        name: instance
+        name: app/instance
       volumes:
       - emptyDir: {}
-        name: migrations
+        name: app/migrations
