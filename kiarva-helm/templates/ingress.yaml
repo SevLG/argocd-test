@@ -3,7 +3,7 @@
 # Middleware
 # Strip prefix /overview
 # Used instead of rewrite-target when testing locally
-# because Traefik doesn't support rewrite-target
+# Traefik doesn't support rewrite-target
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
@@ -21,15 +21,13 @@ metadata:
   name: {{ .Values.name }}-ingress
   annotations:
     {{- if .Values.ingress.localTest }}
-    # using Traefik for local tests
+    # using Traefik for local tests, as nginx does not work on local cluster
     traefik.ingress.kubernetes.io/router.entrypoints: web
     traefik.ingress.kubernetes.io/router.middlewares: precision-medicine-portal-mw-admin@kubernetescrd
     {{- else }}
-    # not tested in production cluster yet, as the cluster
-    # is currently being moved
-    # using Nginx for DC cluster
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
     {{- end }}
 spec:
   {{- if not .Values.ingress.localTest }}
@@ -42,27 +40,27 @@ spec:
   - host: {{ .Values.ingress.host }}
     http:
       paths:
-      - path: /
-        pathType: Prefix
-        backend:
+      - backend:
           service:
             name: {{ .Values.name }}-frontend-service
             port:
               number: 8080
+        path: /(.*)
+        pathType: ImplementationSpecific
       {{- if .Values.ingress.localTest }}
-      - path: /api
+      - backend:
+          service:
+            name: {{ .Values.name }}-backend-service
+            port:
+              number: 5000
+        path: /api
         pathType: Prefix
-        backend:
-          service:
-            name: {{ .Values.name }}-backend-service
-            port:
-              number: 5000
       {{- else }}
-      - path: /api/?(.*)
-        pathType: prefix
-        backend:
+      - backend:
           service:
             name: {{ .Values.name }}-backend-service
             port:
               number: 5000
+        path: /api/(.*)
+        pathType: ImplementationSpecific
       {{- end }}

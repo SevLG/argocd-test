@@ -4,17 +4,17 @@ argocd:
   appname: kiarva
 
 deployment:
-  frontendReplicas: 1
-  backendReplicas: 1
+  frontendReplicas: 3
+  backendReplicas: 3
   container:
     name: kiarva-web-app-prod
-    frontendImage: ghcr.io/scilifelabdatacentre/precision-medicine-portal-frontend:0.3.2
-    backendImage: ghcr.io/scilifelabdatacentre/precision-medicine-portal:0.0.2
+    frontendImage: ghcr.io/scilifelabdatacentre/kiarva-frontend:0.0.4
+    backendImage: ghcr.io/scilifelabdatacentre/kiarva-backend:0.0.2
     imagePullPolicy: Always
 
 ingress:
   localTest: false
-  host: "ki-adaptive-immune-receptor-variant-atlas.se"
+  host: "kiarva-dev.scilifelab-2-prod.sys.kth.se"
 
 np:
   enabled: true
