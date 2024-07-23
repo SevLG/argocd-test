@@ -23,6 +23,13 @@ spec:
       - name: {{ .Values.deployment.container.name }}-flask-app
         image: {{ .Values.deployment.container.backendImage }}
         imagePullPolicy: {{ .Values.deployment.container.imagePullPolicy }}
+        resources:
+          requests:
+            cpu: "1"
+            memory: 1Gi
+            ephemeral-storage: "1Gi"
+          limits:
+            ephemeral-storage: "2Gi"
         # env:
         #   - name: FRONTEND_URL
         #     valueFrom:
@@ -46,16 +53,8 @@ spec:
           runAsGroup: 1501
         volumeMounts:
         - mountPath: "/app/instance"
-          name: scratch-volume
+          name: ephemeral-db
       volumes:
-      - name: scratch-volume
-        ephemeral:
-          volumeClaimTemplate:
-            metadata:
-              labels:
-                type: flask-db-volume
-            spec:
-              accessModes: [ "ReadWriteOnce" ]
-              resources:
-                requests:
-                  storage: 1Gi
+      - name: ephemeral-db
+        emptyDir:
+          sizeLimit: 1Gi

@@ -40,14 +40,14 @@ spec:
   - host: {{ .Values.ingress.host }}
     http:
       paths:
+      {{- if .Values.ingress.localTest }}
       - backend:
           service:
             name: {{ .Values.name }}-frontend-service
             port:
               number: 8080
-        path: /(.*)
-        pathType: ImplementationSpecific
-      {{- if .Values.ingress.localTest }}
+        path: /
+        pathType: Prefix
       - backend:
           service:
             name: {{ .Values.name }}-backend-service
@@ -56,6 +56,13 @@ spec:
         path: /api
         pathType: Prefix
       {{- else }}
+      - backend:
+          service:
+            name: {{ .Values.name }}-frontend-service
+            port:
+              number: 8080
+        path: /(.*)
+        pathType: ImplementationSpecific
       - backend:
           service:
             name: {{ .Values.name }}-backend-service

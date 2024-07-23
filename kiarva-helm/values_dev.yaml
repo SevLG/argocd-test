@@ -1,0 +1,20 @@
+name: kiarva
+
+argocd:
+  appname: kiarva
+
+deployment:
+  frontendReplicas: 1
+  backendReplicas: 1
+  container:
+    name: kiarva-web-app-dev
+    frontendImage: ghcr.io/scilifelabdatacentre/kiarva-frontend:dev
+    backendImage: ghcr.io/scilifelabdatacentre/kiarva-backend:dev
+    imagePullPolicy: Always
+
+ingress:
+  localTest: false
+  host: "kiarva.scilifelab-2-dev.sys.kth.se"
+
+np:
+  enabled: true

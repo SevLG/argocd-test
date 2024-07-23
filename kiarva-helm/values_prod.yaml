@@ -8,8 +8,8 @@ deployment:
   backendReplicas: 3
   container:
     name: kiarva-web-app-prod
-    frontendImage: ghcr.io/scilifelabdatacentre/kiarva-frontend:0.0.4
-    backendImage: ghcr.io/scilifelabdatacentre/kiarva-backend:0.0.2
+    frontendImage: ghcr.io/scilifelabdatacentre/kiarva-frontend:0.0.5
+    backendImage: ghcr.io/scilifelabdatacentre/kiarva-backend:0.0.3
     imagePullPolicy: Always
 
 ingress:
